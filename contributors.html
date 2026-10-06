@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>contributors · seals.cx</title>
+    <meta
+      name="description"
+      content="The people who help make seals.cx."
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .contributors-page {
+        font-family: "Comfortaa", "Segoe UI", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="site-background contributors-page">
+    <canvas class="particle-canvas" aria-hidden="true"></canvas>
+
+    <main class="contributors-wrap">
+      <header class="contributors-header">
+        <a class="back-link" href="index,.html">&#8592; back home</a>
+        <p class="eyebrow">seals.cx / github</p>
+        <h1>contributors</h1>
+        <p class="contributors-intro">
+          people that helped make the site.
+       </p>
+      </header>
+
+      <section class="contributors-panel" aria-labelledby="contributors-title">
+        <div class="contributors-panel-heading">
+          <h2 id="contributors-title">Seals Contributors</h2>
+          <span class="contributor-count" id="contributor-count">loading…</span>
+        </div>
+        <div class="contributor-grid" id="contributor-grid" aria-live="polite">
+          <p class="contributors-status">finding the crew&hellip;</p>
+        </div>
+      </section>
+
+      <a
+        class="github-source"
+        href="https://github.com/seals-cx/seals.cx"
+        target="_blank"
+        rel="noreferrer"
+      >
+        view the repository on github <span aria-hidden="true">&#8599;</span>
+      </a>
+
+      <footer class="font-attribution">
+        <small>
+          This page uses
+          <a
+            href="https://fonts.google.com/specimen/Comfortaa"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Comfortaa
+          </a>
+          by Johan Aakerlund, licensed under the
+          <a
+            href="https://scripts.sil.org/OFL"
+            target="_blank"
+            rel="noreferrer"
+          >
+            SIL Open Font License 1.1
+          </a>.
+        </small>
+        <img class="contributors-seal" src="seal.png" alt="seals.cx logo" />
+      </footer>
+    </main> <!-- This part isnt mine lol-->
+
+    <script src="particles.js"></script>
+    <script>
+      const repository = "seals-cx/seals.cx";
+      const grid = document.querySelector("#contributor-grid");
+      const count = document.querySelector("#contributor-count");
+
+      const formatContributions = (number) =>
+        `${number.toLocaleString()} contribution${number === 1 ? "" : "s"}`;
+
+      const mergeContributors = (contributors, pullRequests) => {
+        const contributorsByLogin = new Map(
+          contributors.map((contributor) => [contributor.login, contributor]),
+        );
+        const existingContributorLogins = new Set(
+          contributors.map((contributor) => contributor.login),
+        );
+
+        pullRequests
+          .filter(
+            (pullRequest) =>
+              pullRequest.merged_at &&
+              pullRequest.user?.login &&
+              pullRequest.user.type !== "Bot",
+          )
+          .forEach((pullRequest) => {
+            const { user } = pullRequest;
+
+            if (!existingContributorLogins.has(user.login)) {
+              const contributor = contributorsByLogin.get(user.login);
+
+              if (contributor) {
+                contributor.contributions += 1;
+                return;
+              }
+
+              contributorsByLogin.set(user.login, {
+                login: user.login,
+                html_url: user.html_url,
+                avatar_url: user.avatar_url,
+                contributions: 1,
+              });
+            }
+          });
+
+        return [...contributorsByLogin.values()];
+      };
+
+      const renderContributors = (contributors) => {
+        count.textContent = `${contributors.length} contributor${
+          contributors.length === 1 ? "" : "s"
+        }`;
+
+        if (!contributors.length) {
+          grid.innerHTML =
+            '<p class="contributors-status">No contributors found yet.</p>';
+          return;
+        }
+
+        grid.innerHTML = contributors
+          .map(
+            (contributor) => `
+              <a class="contributor-card" href="${contributor.html_url}" target="_blank" rel="noreferrer">
+                <img src="${contributor.avatar_url}" alt="" width="56" height="56" />
+                <span class="contributor-details">
+                  <strong>${contributor.login}</strong>
+                  <span>${formatContributions(contributor.contributions)}</span>
+                </span>
+                <span class="contributor-arrow" aria-hidden="true">&#8599;</span>
+              </a>
+            `,
+          )
+          .join("");
+      };
+
+      const fetchJson = (url) =>
+        fetch(url, { headers: { Accept: "application/vnd.github+json" } }).then(
+          (response) => {
+            if (!response.ok) {
+              throw new Error(`GitHub returned ${response.status}`);
+            }
+            return response.json();
+          },
+        );
+
+      Promise.all([
+        fetchJson(
+          `https://api.github.com/repos/${repository}/contributors?per_page=100`,
+        ),
+        fetchJson(
+          `https://api.github.com/repos/${repository}/pulls?state=closed&per_page=100`,
+        ),
+      ])
+        .then(([contributors, pullRequests]) =>
+          renderContributors(mergeContributors(contributors, pullRequests)),
+        )
+        .catch(() => {
+          count.textContent = "unavailable";
+          grid.innerHTML = `
+            <p class="contributors-status">
+              We couldn't reach GitHub right now.
+              <a href="https://github.com/${repository}/graphs/contributors" target="_blank" rel="noreferrer">
+                See the contributor graph instead.
+              </a>
+            </p>
+          `;
+        });
+    </script>
+  </body>
+</html>

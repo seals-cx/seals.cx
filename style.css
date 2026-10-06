@@ -176,6 +176,205 @@ h1 {
   color: var(--button-text);
 }
 
+.contributors-page {
+  display: block;
+}
+
+.contributors-wrap {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 2rem, 56rem);
+  margin: 0 auto;
+  padding: 3.5rem 0;
+}
+
+.contributors-header {
+  max-width: 38rem;
+  margin-bottom: 2.5rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 3.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  color: var(--button-bg);
+  transform: translateX(-3px);
+}
+
+.back-link:focus-visible,
+.github-source:focus-visible,
+.contributor-card:focus-visible {
+  outline: 2px solid var(--button-bg);
+  outline-offset: 4px;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--button-bg);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.contributors-header h1 {
+  font-size: clamp(3rem, 10vw, 5rem);
+}
+
+.contributors-intro {
+  max-width: 30rem;
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.contributors-panel {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(49, 50, 68, 0.66);
+  box-shadow: 0 18px 48px rgba(17, 17, 27, 0.2);
+}
+
+.contributors-panel-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.5rem 1.25rem;
+}
+
+.contributors-panel-heading h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.contributor-count {
+  color: var(--muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.contributor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.contributor-card {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.85rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(203, 166, 247, 0.14);
+  border-radius: 9px;
+  color: var(--text);
+  background: rgba(30, 30, 46, 0.58);
+  text-decoration: none;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.contributor-card:hover {
+  border-color: rgba(203, 166, 247, 0.52);
+  background: rgba(203, 166, 247, 0.1);
+  transform: translateY(-2px);
+}
+
+.contributor-card img {
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--panel);
+}
+
+.contributor-details {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.contributor-details strong,
+.contributor-details span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contributor-details strong {
+  font-size: 0.92rem;
+}
+
+.contributor-details span {
+  color: var(--muted);
+  font-size: 0.73rem;
+}
+
+.contributor-arrow {
+  margin-left: auto;
+  color: var(--button-bg);
+  font-size: 1rem;
+}
+
+.contributors-status {
+  grid-column: 1 / -1;
+  margin: 1.5rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.contributors-status a {
+  color: var(--button-bg);
+}
+
+.github-source {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.github-source:hover {
+  color: var(--button-bg);
+}
+
+.font-attribution {
+  margin-top: 2.5rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.font-attribution a {
+  color: var(--muted);
+}
+
+.font-attribution a:hover,
+.font-attribution a:focus-visible {
+  color: var(--button-bg);
+}
+
+.contributors-seal {
+  display: block;
+  width: 42px;
+  height: 42px;
+  margin: 1.25rem auto 0;
+  object-fit: contain;
+  opacity: 0.8;
+}
+
 @media (max-width: 480px) {
   .wrap {
     padding: 2rem 0.5rem;
@@ -193,6 +392,29 @@ h1 {
     padding: 0.85rem;
     gap: 0.2rem 0.6rem;
   }
+
+  .contributors-wrap {
+    padding: 2rem 0;
+  }
+
+  .back-link {
+    margin-bottom: 2.75rem;
+  }
+
+  .contributors-panel {
+    padding: 0.75rem;
+  }
+
+  .contributors-panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.5rem 0.5rem 1rem;
+  }
+
+  .contributor-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -205,6 +427,11 @@ h1 {
   }
 
   .socials a {
+    transition: none;
+  }
+
+  .back-link,
+  .contributor-card {
     transition: none;
   }
 }
